@@ -31,6 +31,8 @@ public class JDBCDPPPTDataServiceImpl implements DPPPTDataService {
 
     private static final Logger logger = LoggerFactory.getLogger(JDBCDPPPTDataServiceImpl.class);
 	private static final String PGSQL = "pgsql";
+
+    // FIXME MAKE ENUMERATION
 	private final String dbType;
     private final NamedParameterJdbcTemplate jt;
 	private final SimpleJdbcInsert reedemUUIDInsert;
@@ -43,9 +45,9 @@ public class JDBCDPPPTDataServiceImpl implements DPPPTDataService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void upsertExposee(Exposee exposee, String appSource) {
-        String sql = null;
+        String sql;
         if (dbType.equals(PGSQL)) {
 			sql = "insert into t_exposed (key, key_date, app_source) values (:key, :key_date, :app_source)"
                 + " on conflict on constraint key do nothing";
@@ -80,6 +82,7 @@ public class JDBCDPPPTDataServiceImpl implements DPPPTDataService {
 		params.addValue("dayMidnight", dayMidnight);
 		params.addValue("nextDayMidnight", dayMidnight.plusDays(1));
         String sql = "select max(pk_exposed_id) from t_exposed where received_at >= :dayMidnight and received_at < :nextDayMidnight";
+        // FIXME USE LONG?
         Integer maxId = jt.queryForObject(sql, params, Integer.class);
         if (maxId == null) {
             return 0;
