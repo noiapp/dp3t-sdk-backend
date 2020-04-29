@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Exposee {
 	@JsonIgnore
-	private Integer id;
+	private Integer Id;
 
 	@NotNull
 	private String key;
@@ -31,11 +31,11 @@ public class Exposee {
 
 	@JsonIgnore
 	public Integer getId() {
-		return id;
+		return Id;
 	}
 
 	public void setId(Integer id) {
-		this.id = id;
+		this.Id = id;
 	}
 
 	public long getKeyDate() {
