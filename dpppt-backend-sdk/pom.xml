@@ -200,6 +200,7 @@
 				<version>2.19.1</version>
 				<configuration>
 					<forkCount>1</forkCount>
+					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
 
@@ -270,14 +271,14 @@
 				<configuration>
 					<spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>test</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>test</phase>-->
+<!--						<goals>-->
+<!--							<goal>check</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -319,7 +320,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/noiapp/noiapp-backend</url>
+			<url>https://maven.pkg.github.com/noiapp/noi-app-backend-new-WIP.git</url>
 		</repository>
 	</distributionManagement>
 </project>

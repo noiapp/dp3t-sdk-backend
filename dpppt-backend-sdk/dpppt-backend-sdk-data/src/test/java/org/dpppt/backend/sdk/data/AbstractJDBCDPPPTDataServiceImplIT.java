@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 public abstract class AbstractJDBCDPPPTDataServiceImplIT {
@@ -47,7 +49,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
 
         Exposee exposee = new Exposee();
         exposee.setKey("key1");
-        exposee.setOnset("2014-01-28");
+        exposee.setKeyDate(Date.valueOf(LocalDate.of(2014, 1, 28)).getTime());
 
         // WHEN
         target.upsertExposee(exposee, "test-app");
@@ -66,7 +68,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
             Assertions.assertThat(resultSet.getString("key")).isEqualTo("key1");
             Assertions.assertThat(resultSet.getString("received_at")).isNotNull();
             Assertions.assertThat(resultSet.getString("app_source")).isEqualTo("test-app");
-            Assertions.assertThat(resultSet.getDate("onset")).isEqualTo(Date.valueOf(LocalDate.of(2014, 1, 28)));
+            Assertions.assertThat(resultSet.getDate("key_date")).isEqualTo(Date.valueOf(LocalDate.of(2014, 1, 28)));
         }
     }
 
@@ -74,9 +76,11 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
     void shouldUpdateExposee() throws SQLException {
         // GIVEN
 
+        long testDate = Date.valueOf(LocalDate.of(2014, 2, 28)).getTime();
+
         Exposee exposee = new Exposee();
         exposee.setKey("key1");
-        exposee.setOnset("2014-01-28");
+        exposee.setKeyDate(testDate);
 
         target.upsertExposee(exposee, "test-app");
 
@@ -84,7 +88,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
         final long exposeeCountBefore = getExposeeCount();
 
         exposee.setKey("key1");
-        exposee.setOnset("2014-02-28");
+        exposee.setKeyDate(testDate);
 
         target.upsertExposee(exposee, "test-app-fix");
 
@@ -101,7 +105,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
             Assertions.assertThat(resultSet.getInt("pk_exposed_id")).isPositive();
             Assertions.assertThat(resultSet.getString("key")).isEqualTo("key1");
             Assertions.assertThat(resultSet.getString("received_at")).isNotNull();
-            Assertions.assertThat(resultSet.getDate("onset")).isEqualTo(Date.valueOf(LocalDate.of(2014, 2, 28)));
+            Assertions.assertThat(resultSet.getDate("key_date")).isEqualTo(Date.valueOf(LocalDate.of(2014, 2, 28)));
             Assertions.assertThat(resultSet.getString("app_source")).isEqualTo("test-app-fix");
         }
     }
@@ -113,7 +117,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
         {
             Exposee exposee = new Exposee();
             exposee.setKey("key1");
-            exposee.setOnset("2014-01-28");
+            exposee.setKeyDate(11);
 
             target.upsertExposee(exposee, "test-app");
         }
@@ -121,13 +125,13 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
         {
             Exposee exposee = new Exposee();
             exposee.setKey("key2");
-            exposee.setOnset("2014-01-29");
+            exposee.setKeyDate(22);
 
             target.upsertExposee(exposee, "test-app");
         }
 
         // WHEN
-        final List<Exposee> sortedExposedForDay = target.getSortedExposedForDay(LocalDate.now());
+        final List<Exposee> sortedExposedForDay = target.getSortedExposedForDay(OffsetDateTime.now(ZoneOffset.UTC));
 
         // THEN
         Assertions.assertThat(sortedExposedForDay).hasSize(2);
@@ -139,7 +143,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
     void shouldReturnEmptyListForGetSortedExposedForDay() {
 
         // WHEN
-        final List<Exposee> sortedExposedForDay = target.getSortedExposedForDay(LocalDate.now());
+        final List<Exposee> sortedExposedForDay = target.getSortedExposedForDay(OffsetDateTime.now(ZoneOffset.UTC));
 
         // THEN
         Assertions.assertThat(sortedExposedForDay).isEmpty();
@@ -152,7 +156,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
         {
             Exposee exposee = new Exposee();
             exposee.setKey("key1");
-            exposee.setOnset("2014-01-28");
+            exposee.setKeyDate(21);
 
             target.upsertExposee(exposee, "test-app");
         }
@@ -160,13 +164,13 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
         {
             Exposee exposee = new Exposee();
             exposee.setKey("key2");
-            exposee.setOnset("2014-01-29");
+            exposee.setKeyDate(22);
 
             target.upsertExposee(exposee, "test-app");
         }
 
         // WHEN
-        final Integer maxExposedIdForDay = target.getMaxExposedIdForDay(LocalDate.now());
+        final Integer maxExposedIdForDay = target.getMaxExposedIdForDay(OffsetDateTime.now(ZoneOffset.UTC));
 
         // THEN
         try (
@@ -183,7 +187,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
     void shouldGetZeroForGetMaxExposedIdForDay() {
 
         // WHEN
-        final Integer maxExposedIdForDay = target.getMaxExposedIdForDay(LocalDate.now());
+        final Integer maxExposedIdForDay = target.getMaxExposedIdForDay(OffsetDateTime.now(ZoneOffset.UTC));
 
         // THEN
         Assertions.assertThat(maxExposedIdForDay).isEqualTo(0);
