@@ -17,7 +17,6 @@ public class Exposee {
 	@NotNull
 	private String key;
 
-	// TODO MAKE LOCAL DATE??
 	@NotNull
 	private long keyDate;
 
