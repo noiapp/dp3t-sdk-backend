@@ -106,7 +106,7 @@ public abstract class AbstractJDBCDPPPTDataServiceImplIT {
             Assertions.assertThat(resultSet.getString("key")).isEqualTo("key1");
             Assertions.assertThat(resultSet.getString("received_at")).isNotNull();
             Assertions.assertThat(resultSet.getDate("key_date")).isEqualTo(Date.valueOf(LocalDate.of(2014, 2, 28)));
-            Assertions.assertThat(resultSet.getString("app_source")).isEqualTo("test-app-fix");
+            Assertions.assertThat(resultSet.getString("app_source")).isEqualTo("test-app");
         }
     }
 
