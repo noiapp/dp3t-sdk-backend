@@ -1,6 +1,28 @@
-# DP3T-Backend-SDK
+# NoiApp-Backend
 ![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)
-![Java CI with Maven](https://github.com/DP-3T/dp3t-sdk-backend/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)
+![Java CI with Maven](https://github.com/noiapp/noiapp-backend/workflows/Java%20CI%20with%20Maven/badge.svg)
+
+## Dev Environment
+Quickly up and running?
+```
+docker-compose -f app-dev.yml up
+```
+From another terminal:
+```
+curl -k https://localhost/v1
+Hello from DP3T WS
+```
+read further documentation for details.
+
+## Discussion and chat
+
+While daily chat is on slack, the discussion on core topics like architecture is on google groups.
+
+Slack: [![Slack](https://img.shields.io/badge/chat-slack-ff69b4.svg)](https://noiapp.slack.com/)
+
+Google: [![Google groups](https://img.shields.io/badge/discuss-google%20groups-red)](https://groups.google.com/forum/#!forum/noiapp)
+
+This is a fork of [https://github.com/DP-3T/dp3t-sdk-backend.git](https://github.com/DP-3T/dp3t-sdk-backend.git) for the [NoiApp](https://github.com/noiapp/noiapp)
 
 ## DP3T
 The Decentralised Privacy-Preserving Proximity Tracing (DP-3T) project is an open protocol for COVID-19 proximity tracing using Bluetooth Low Energy functionality on mobile devices that ensures personal data and computation stays entirely on an individual's phone. It was produced by a core team of over 25 scientists and academic researchers from across Europe. It has also been scrutinized and improved by the wider community.
@@ -34,7 +56,7 @@ The SDK-Backend provides an interface to publish exposed keys and get a list of 
 
 > Note that the requests on the image are not the actual endpoints in the reference implementation. They differ in the picture to show the possible separation of the two requests. For the actual enpoint paths refer to the backend documentation further down (e.g. PDF or OpenAPI).
 
-![](documentation/img/dp3t-backend.svg)
+![](documentation/img/dp3t-backend.png)
 
 ### General
 This repository contains a backend implementation (webservice) written with Spring Boot, that implements the specification of the Decentralized Privacy-Preserving Proximity Tracing system.
@@ -65,21 +87,24 @@ mvn install
 ```
 ### Run
 ```bash
-java -jar dpppt-backend-sdk-ws/target/dpppt-backend-sdk-ws-*.jar
+java -Dspring.profiles.active=dev -jar dpppt-backend-sdk-ws/target/dpppt-backend-sdk-ws-*.jar
 ```
 ### Dockerfiles
 The dockerfile includes a base jdk image to run the jar. To actually build the docker container, you need to place the generated jar in the bin folder.
 
 ```bash
-cp dpppt-sdk-backend/dpppt-backend-sdk-ws/target/dpppt-backend-sdk-ws-1.0.0-SNAPSHOT.jar ws-sdk/ws/bin/dpppt-backend-sdk-ws-1.0.0
+cd ..
+cp dpppt-backend-sdk/dpppt-backend-sdk-ws/target/dpppt-backend-sdk-ws-1.0.0-SNAPSHOT.jar ws-sdk/ws/bin/dpppt-backend-sdk-ws-1.0.0.jar
 ```
 
 ```bash
-cd ws-sdk && docker build -t <the-tag-we-use> .
+cd ws-sdk && docker build -t noiapp/noiapp-backend:develop .
 ```
 
+For development using an in-memory H2 database you can run:
+
 ```bash
-docker run -p 80:8080 <the-tag-we-use>
+docker run -p 80:8080 -e JAVA_OPTS="-Dspring.profiles.active=dev" noiapp/noiapp-backend:develop
  ```
 
 ### Makefile
@@ -97,7 +122,11 @@ To build the docker image run
 make docker-build
 ```
 
+### Test hello messge
 
+```
+curl -XGET http://localhost/v1
+```
 
 ## License
 This project is licensed under the terms of the MPL 2 license. See the [LICENSE](LICENSE) file.

@@ -1,0 +1,37 @@
+version: "3.6"
+services:
+
+  noiapp-backend:
+    image: noiapp/noiapp-backend:develop
+    restart: unless-stopped
+    environment:
+      - _JAVA_OPTIONS=-Xmx1024m -Xms1024m -Duser.timezone=UTC
+      - SPRING_PROFILES_ACTIVE=prod,httplog
+      - DATASOURCE_URL=jdbc:postgresql://noiapp-database:5432/noiapp
+      - DATASOURCE_USERNAME=noiapp
+      - DATASOURCE_PASSWORD=noiapp
+    ports:
+      - 127.0.0.1:80:8080
+    depends_on:
+      - noiapp-database
+
+  noiapp-database:
+    image: postgres:12
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=noiapp
+      - POSTGRES_USER=noiapp
+      - POSTGRES_PASSWORD=noiapp
+
+  noiapp-caddy:
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile-dev
+    restart: unless-stopped
+    ports:
+      - 443:443
+    volumes:
+      - "/var/log/caddy/:/var/log/caddy/"
+    depends_on:
+      - noiapp-backend
+
