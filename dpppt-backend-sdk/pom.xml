@@ -19,6 +19,7 @@
 		<assertj-version>3.15.0</assertj-version>
 		<maven-surefire-plugin-version>2.22.2</maven-surefire-plugin-version>
 		<maven-failsafe-plugin-version>2.22.2</maven-failsafe-plugin-version>
+		<jacoco-maven-plugin-version>0.8.5</jacoco-maven-plugin-version>
 	</properties>
 
 	<modules>
@@ -144,37 +145,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin-version}</version>
-				<configuration>
-					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${maven-failsafe-plugin-version}</version>
-				<configuration>
-					<!-- Force alphabetical order to have a reproducible build -->
-					<runOrder>alphabetical</runOrder>
-					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.5</version>
+				<version>${jacoco-maven-plugin-version}</version>
 				<executions>
 					<!-- set arg line property for surefire -->
 					<execution>
-						<id>prepare-agent</id>
+						<id>prepare-agent-01</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
@@ -184,7 +161,7 @@
 					</execution>
 					<!-- set arg line property for failsafe -->
 					<execution>
-						<id>prepare-agent-integration</id>
+						<id>prepare-agent-integration-01</id>
 						<goals>
 							<goal>prepare-agent-integration</goal>
 						</goals>
@@ -192,40 +169,7 @@
 							<propertyName>failsafeArgLine</propertyName>
 						</configuration>
 					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<configuration>
-					<forkCount>1</forkCount>
-					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
-				</configuration>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.18.1</version>
-				<executions>
-					<execution>
-						<id>integration-tests</id>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-						<configuration>
-							<argLine>${itCoverageAgent}</argLine>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.5</version>
-				<executions>
 					<!-- METHOD 1 -->
 					<!--<execution>-->
 					<!--<id>prepare-agent</id>-->
@@ -237,7 +181,7 @@
 
 					<!-- METHOD 2 -->
 					<execution>
-						<id>prepare-unit-tests</id>
+						<id>prepare-unit-tests-02</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
@@ -248,7 +192,7 @@
 
 					<!-- prepare agent for measuring integration tests -->
 					<execution>
-						<id>prepare-agent</id>
+						<id>prepare-agent-02</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
@@ -256,6 +200,41 @@
 						<configuration>
 							<!--<destFile>${sonar.jacoco.itReportPath}</destFile>-->
 							<propertyName>itCoverageAgent</propertyName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin-version}</version>
+				<configuration>
+					<!-- Setting forkCount to 0 is required by JaCoCo plugin -->
+					<forkCount>0</forkCount>
+					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven-failsafe-plugin-version}</version>
+				<configuration>
+					<!-- Force alphabetical order to have a reproducible build -->
+					<runOrder>alphabetical</runOrder>
+					<argLine>-Duser.timezone=UTC -Dfile.encoding=UTF-8</argLine>
+					<!-- Setting forkCount to 0 is required by JaCoCo plugin -->
+					<forkCount>0</forkCount>
+				</configuration>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<argLine>${itCoverageAgent}</argLine>
 						</configuration>
 					</execution>
 				</executions>
@@ -299,7 +278,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.5</version>
+					<version>${jacoco-maven-plugin-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
