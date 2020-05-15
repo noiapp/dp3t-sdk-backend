@@ -10,6 +10,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>DP3T Backend SDK</name>
 
+
 	<properties>
 		<java-version>11</java-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,6 +20,8 @@
 		<assertj-version>3.15.0</assertj-version>
 		<maven-surefire-plugin-version>2.22.2</maven-surefire-plugin-version>
 		<maven-failsafe-plugin-version>2.22.2</maven-failsafe-plugin-version>
+		<maven-project-info-reports-plugin>3.0.0</maven-project-info-reports-plugin>
+		<spotbugs-maven-plugin-version>4.0.0</spotbugs-maven-plugin-version>
 	</properties>
 
 	<modules>
@@ -256,12 +259,12 @@
 						<configuration>
 							<!--<destFile>${sonar.jacoco.itReportPath}</destFile>-->
 							<propertyName>itCoverageAgent</propertyName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.9.0</version>
 			</plugin>
@@ -304,7 +307,7 @@
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
-					<version>4.0.0</version>
+					<version>${spotbugs-maven-plugin-version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>com.github.spotbugs</groupId>
@@ -323,5 +326,30 @@
 			<name>GitHub Packages</name>
 			<url>https://maven.pkg.github.com/noiapp/noi-app-backend-new-WIP.git</url>
 		</repository>
+
+		<site>
+			<id>id-local-preview</id>
+			<name>local-preview</name>
+			<url>http://localhost/</url>
+		</site>
 	</distributionManagement>
+
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin}</version>
+			</plugin>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
