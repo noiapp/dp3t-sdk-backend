@@ -35,6 +35,18 @@ This is the first implementation of the DP-3T "low bandwidth" protocol. The curr
 
 Our immediate roadmap is: to support the Apple/Google wire protocol, to be forward-compatible, and to support the actual Apple/Google API as soon as it is released to iOS and Android devices.
 
+## Reporting
+
+Using the maven plugin you can generate a full website containing the documentation.
+Currently the resulting site is not deployable yet.
+
+[Root](dpppt-backend-sdk/target/staging/index.html)
+
+```bash
+cd dpppt-backend-sdk
+mvn clean compile site site:stage
+```
+
 ## Repositories
 * Android SDK & Calibration app: [dp3t-sdk-android](https://github.com/DP-3T/dp3t-sdk-android)
 * iOS SDK & Calibration app: [dp3t-sdk-ios](https://github.com/DP-3T/dp3t-sdk-ios)
